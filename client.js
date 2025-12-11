@@ -31,16 +31,15 @@ let playerColor = 'white'; // first joined = white
 
 // tiny unicode pieces mapping
 const PIECES = {
-  'p':'♟','r':'♜','n':'♞','b':'♝','q':'♛','k':'♚',
-  'P':'♙','R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔'
+  'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚',
+  'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔'
 };
 
 // helpers
-function show(el){ el.classList.remove('hidden'); }
-function hide(el){ el.classList.add('hidden'); }
+function show(el) { el.classList.remove('hidden'); }
+function hide(el) { el.classList.add('hidden'); }
 
-function downloadFenToBoard(fen){
-  // create board squares and pieces from FEN
+function downloadFenToBoard(fen) {
   boardEl.innerHTML = '';
   const rows = fen.split(' ')[0].split('/');
   let rank = 8;
@@ -48,8 +47,8 @@ function downloadFenToBoard(fen){
     let file = 0;
     for (let ch of r) {
       if (/\d/.test(ch)) {
-        const n = parseInt(ch,10);
-        for (let i=0;i<n;i++){
+        const n = parseInt(ch, 10);
+        for (let i = 0; i < n; i++) {
           const sq = createSquare(rank, file, null);
           boardEl.appendChild(sq);
           file++;
@@ -64,10 +63,11 @@ function downloadFenToBoard(fen){
   }
 }
 
-function createSquare(rank, file, pieceChar){
+function createSquare(rank, file, pieceChar) {
   const sq = document.createElement('div');
   sq.className = 'square ' + (((rank + file) % 2 === 0) ? 'light' : 'dark');
-  sq.dataset.coord = ${'abcdefgh'[file]}${rank};
+  sq.dataset.coord = `${'abcdefgh'[file]}${rank}`;
+
   if (pieceChar) {
     const span = document.createElement('div');
     span.textContent = PIECES[pieceChar] || '?';
@@ -75,27 +75,23 @@ function createSquare(rank, file, pieceChar){
     span.dataset.piece = pieceChar;
     sq.appendChild(span);
   }
-  // touch handlers
+
   sq.addEventListener('click', () => onSquareClick(sq.dataset.coord, sq));
   return sq;
 }
 
-function onSquareClick(coord, sqEl){
+function onSquareClick(coord, sqEl) {
   if (!selectedFrom) {
-    // pick up if contains a piece
     if (sqEl.querySelector('[data-piece]')) {
       selectedFrom = coord;
       sqEl.style.outline = '3px solid rgba(245,158,11,0.6)';
     }
   } else {
     const to = coord;
-    // send move
     socket.emit('make_move', { roomCode: currentRoom, from: selectedFrom, to }, (res) => {
-      if (res && res.error) {
-        alert(res.error);
-      }
+      if (res && res.error) alert(res.error);
     });
-    // clear selection visuals
+
     document.querySelectorAll('.square').forEach(s => s.style.outline = 'none');
     selectedFrom = null;
   }
@@ -109,16 +105,17 @@ createBtn.addEventListener('click', () => {
       currentRoom = res.roomCode;
       roomCodeInput.value = currentRoom;
       enterRoomUI();
-      alert('Room created: ' + currentRoom + '\nShare this code or invite link.');
+      alert('Room created: ' + currentRoom);
     }
   });
 });
 
-// join
+// join room
 joinBtn.addEventListener('click', () => {
   const code = (roomCodeInput.value || '').trim().toUpperCase();
   if (!code) return alert('Room code daalo.');
   const name = nameInput.value || 'Guest';
+
   socket.emit('join_room', { roomCode: code, displayName: name }, (res) => {
     if (res && res.error) return alert(res.error);
     currentRoom = code;
@@ -126,25 +123,22 @@ joinBtn.addEventListener('click', () => {
   });
 });
 
-// quick join: try join code in input else use last known
+// quick join
 quickBtn.addEventListener('click', () => {
   const code = (roomCodeInput.value || '').trim().toUpperCase();
   if (!code) return alert('Room code daalo for quick join.');
   joinBtn.click();
 });
 
-// when in room, show secret modal to submit secret
-function enterRoomUI(){
+function enterRoomUI() {
   show(secretModal);
   show(boardSection);
   statusEl.textContent = 'Room: ' + currentRoom + ' — submit secret to start';
-  // request room info to set color
+
   socket.emit('request_room_info', { roomCode: currentRoom }, (info) => {
     if (info && info.players) {
-      // if first joined, you are white
-      const me = socket.id;
       mySocketId = socket.id;
-      playerColor = info.players[0] && info.players[0].id === mySocketId ? 'white' : 'black';
+      playerColor = info.players[0]?.id === mySocketId ? 'white' : 'black';
     }
   });
 }
@@ -152,7 +146,8 @@ function enterRoomUI(){
 // submit secret
 submitSecretBtn.addEventListener('click', () => {
   const secret = secretInput.value || '';
-  if (secret.trim().length === 0) return alert('Secret thoda likho.');
+  if (!secret.trim()) return alert('Secret thoda likho.');
+
   socket.emit('submit_secret', { roomCode: currentRoom, secret }, (res) => {
     if (res && res.error) return alert(res.error);
     hide(secretModal);
@@ -167,9 +162,10 @@ socket.on('connect', () => {
 
 socket.on('room_update', info => {
   if (!info) return;
-  // update status
+
   const players = info.players || [];
-  statusEl.textContent = Players: ${players.map(p=>p.name).join(' & ')} • ${info.status};
+  statusEl.textContent =
+    `Players: ${players.map(p => p.name).join(' & ')} • ${info.status}`;
 });
 
 socket.on('game_start', data => {
@@ -180,10 +176,11 @@ socket.on('game_start', data => {
 
 socket.on('move_made', data => {
   if (!data) return;
+
   boardStateFEN = data.fen;
   downloadFenToBoard(boardStateFEN);
-  // append move
-  if (data.move && data.move.san) {
+
+  if (data.move?.san) {
     const div = document.createElement('div');
     div.textContent = data.move.san;
     movesList.appendChild(div);
@@ -196,15 +193,13 @@ socket.on('game_over', data => {
 });
 
 socket.on('reveal_opponent_secret', data => {
-  if (data && data.secret) {
+  if (data?.secret) {
     revealedSecret.textContent = data.secret;
     show(revealModal);
   }
 });
 
-closeRevealBtn.addEventListener('click', () => {
-  hide(revealModal);
-});
+closeRevealBtn.addEventListener('click', () => hide(revealModal));
 
-// initial board (starting FEN)
+// initial board
 downloadFenToBoard('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
