@@ -1,26 +1,24 @@
-/* style.css - mobile-first */
-:root{
-  --bg:#0f1724;
-  --card:#0b1220;
-  --accent:#f59e0b;
-  --muted:#94a3b8;
-  --glass: rgba(255,255,255,0.03);
-  --round:14px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+/* New vibrant & cursive style for Pal-K Chess */
+:root {
+  --bg: #1a1a2e;
+  --card: #162447;
+  --accent: #e43f5a;
+  --muted: #f5f5f5;
+  --glass: rgba(255,255,255,0.05);
+  --round: 16px;
+  font-family: 'Dancing Script', cursive, 'Segoe UI', sans-serif;
 }
 
-*{box-sizing:border-box}
-html,body,#app{height:100%}
-body{
-  margin:0;
-  background:linear-gradient(180deg,#071124 0%, var(--bg) 100%);
-  color:#e6eef7;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+* { box-sizing: border-box; }
+html, body, #app { height: 100%; }
+body {
+  margin: 0;
+  background: linear-gradient(180deg,#0f3460 0%, var(--bg) 100%);
+  color: var(--muted);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 /* Topbar */
@@ -36,47 +34,54 @@ body{
 .brand-mark{
   font-weight:700;
   letter-spacing:2px;
-  color:var(--accent);
-  font-size:18px;
+  color: var(--accent);
+  font-size:22px;
+  font-family: 'Dancing Script', cursive;
 }
 .brand-sub{
-  font-size:11px;
-  color:var(--muted);
+  font-size:13px;
+  color: var(--muted);
 }
 
 /* Buttons */
 .btn{
-  background:linear-gradient(180deg,var(--accent),#d97706);
+  background: linear-gradient(180deg,#ff6f91,#ff9671);
   border:none;
-  color:#071124;
-  padding:10px 12px;
-  border-radius:10px;
+  color:#fff;
+  padding:10px 14px;
+  border-radius: var(--round);
   font-weight:600;
-  min-width:44px;
+  cursor:pointer;
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s;
+}
+.btn:hover{
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(255,111,145,0.4);
 }
 .btn.ghost{
   background:transparent;
-  border:1px solid rgba(255,255,255,0.06);
-  color:var(--muted);
+  border:1px solid rgba(255,255,255,0.1);
+  color: var(--muted);
 }
 
 /* Card */
 .card{
-  background:var(--card);
-  border-radius:var(--round);
-  padding:12px;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  background: var(--card);
+  border-radius: var(--round);
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
 }
 
 /* Forms */
-.form-row{display:flex;gap:8px;margin-bottom:8px}
+.form-row{display:flex;gap:10px;margin-bottom:10px}
 .form-row input{
   flex:1;
   padding:12px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,0.03);
-  background:var(--glass);
-  color:inherit;
+  border-radius: var(--round);
+  border:1px solid rgba(255,255,255,0.05);
+  background: var(--glass);
+  color: inherit;
+  font-family: 'Dancing Script', cursive;
 }
 
 /* Board layout */
@@ -84,19 +89,19 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:8px 0;
+  padding:10px 0;
 }
 .board{
   width:100%;
-  max-width:420px;
+  max-width:440px;
   aspect-ratio:1;
   display:grid;
-  grid-template-columns:repeat(8,1fr);
-  border-radius:12px;
+  grid-template-columns: repeat(8,1fr);
+  border-radius: var(--round);
   overflow:hidden;
   touch-action: none;
   user-select:none;
-  box-shadow: 0 8px 30px rgba(3,7,18,0.7);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.7);
 }
 
 /* squares */
@@ -104,32 +109,33 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:22px;
+  font-size:26px;
   padding:6px;
-  min-width:44px;
-  min-height:44px;
+  min-width:46px;
+  min-height:46px;
   -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s;
 }
-.square.light{ background: linear-gradient(180deg,#f8fafc 0%, #f1f5f9 100%); color:#071124;}
-.square.dark{ background: linear-gradient(180deg,#0b1220 0%, #09101a 100%); color:#e6eef7;}
+.square.light{ background: #f6f6f6; color: #1a1a2e; }
+.square.dark{ background: #162447; color: #fff; }
 
 /* controls */
-.controls{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-.status{font-weight:600;color:var(--muted)}
-.moves{max-height:120px;overflow:auto;font-size:13px;color:var(--muted)}
+.controls{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.status{font-weight:600;color: var(--accent); font-family: 'Dancing Script', cursive;}
+.moves{max-height:140px;overflow:auto;font-size:14px;color: var(--muted); font-family: 'Dancing Script', cursive;}
 
 /* modal */
-.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.5)}
-.modal-card{background:linear-gradient(180deg,#071124,#081426);padding:16px;border-radius:12px;width:88%;max-width:420px}
-.modal-card h3{margin:0 0 8px 0}
-.modal-card textarea{width:100%;min-height:80px;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:var(--glass);color:inherit}
-.modal-actions{display:flex;justify-content:flex-end;margin-top:10px}
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(26,26,46,0.7)}
+.modal-card{background:linear-gradient(180deg,#162447,#0f3460);padding:18px;border-radius:var(--round);width:88%;max-width:440px;font-family: 'Dancing Script', cursive;}
+.modal-card h3{margin:0 0 10px 0;color:var(--accent);}
+.modal-card textarea{width:100%;min-height:90px;padding:12px;border-radius:var(--round);border:1px solid rgba(255,255,255,0.05);background:var(--glass);color:inherit;font-family: 'Dancing Script', cursive;}
+.modal-actions{display:flex;justify-content:flex-end;margin-top:12px}
 
 /* reveal secret box */
-.secret-box{background:rgba(255,255,255,0.03);padding:12px;border-radius:8px;color:var(--accent);font-weight:700}
+.secret-box{background:rgba(255,255,255,0.05);padding:12px;border-radius:var(--round);color:var(--accent);font-weight:700;font-family: 'Dancing Script', cursive;}
 
 /* footer */
-.footer{display:flex;justify-content:center;color:var(--muted);font-size:12px}
+.footer{display:flex;justify-content:center;color:var(--muted);font-size:13px;font-family: 'Dancing Script', cursive;}
 .easter{letter-spacing:6px}
 
 /* helper */
@@ -138,6 +144,6 @@ body{
 /* responsive tweaks */
 @media(min-width:700px){
   body{padding:28px}
-  .brand-mark{font-size:20px}
+  .brand-mark{font-size:26px}
   .board{max-width:560px}
 }
