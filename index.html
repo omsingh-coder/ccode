@@ -1,71 +1,71 @@
 <!doctype html>
 <html lang="hi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Pal—k • PvP Chess</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <div id="app">
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-mark">PAL•K</span>
-        <small class="brand-sub">A little mystery for someone special</small>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">PAL•K</span>
+      <small class="brand-sub">A little mystery for someone special</small>
+    </div>
+    <button id="createBtn" class="btn">Create Room</button>
+  </header>
+
+  <main class="main">
+    <section id="lobby" class="card">
+      <div class="form-row">
+        <input id="nameInput" placeholder="Naam (e.g. Pal? or P.)">
+        <input id="roomCodeInput" placeholder="Room code daalo (4 char) ya invite link">
       </div>
-      <button id="createBtn" class="btn">Create Room</button>
-    </header>
+      <div class="form-row">
+        <button id="joinBtn" class="btn">Join Room</button>
+        <button id="quickBtn" class="btn ghost">Quick Join</button>
+      </div>
+      <p class="hint">Tip: Create room → dono secret bhejo → khelo. Winner ko hi opponent ka secret milega.</p>
+    </section>
 
-    <main class="main">
-      <section id="lobby" class="card">
-        <div class="form-row">
-          <input id="nameInput" placeholder="Naam (e.g. Pal? or P.)" />
-          <input id="roomCodeInput" placeholder="Room code daalo (4 char) ya invite link" />
-        </div>
-        <div class="form-row">
-          <button id="joinBtn" class="btn">Join Room</button>
-          <button id="quickBtn" class="btn ghost">Quick Join</button>
-        </div>
-        <p class="hint">Tip: Create room → dono secret bhejo → khelo. Winner ko hi opponent ka secret milega.</p>
-      </section>
+    <section id="boardSection" class="card hidden">
+      <div class="board-wrap">
+        <div id="board" class="board"></div>
+      </div>
+      <div class="controls">
+        <div id="status" class="status">Waiting...</div>
+        <div class="moves" id="movesList"></div>
+      </div>
+    </section>
 
-      <section id="boardSection" class="card hidden">
-        <div class="board-wrap">
-          <div id="board" class="board"></div>
+    <section id="secretModal" class="modal hidden">
+      <div class="modal-card">
+        <h3>Apna secret likho</h3>
+        <textarea id="secretInput" placeholder="Chhupa ke likho — winner hi dekhega"></textarea>
+        <div class="modal-actions">
+          <button id="submitSecretBtn" class="btn">Submit Secret</button>
         </div>
-        <div class="controls">
-          <div id="status" class="status">Waiting...</div>
-          <div class="moves" id="movesList"></div>
+      </div>
+    </section>
+
+    <section id="revealModal" class="modal hidden">
+      <div class="modal-card">
+        <h3>Opponent ka secret</h3>
+        <div id="revealedSecret" class="secret-box"></div>
+        <div class="modal-actions">
+          <button id="closeRevealBtn" class="btn">Close</button>
         </div>
-      </section>
+      </div>
+    </section>
+  </main>
 
-      <section id="secretModal" class="modal hidden">
-        <div class="modal-card">
-          <h3>Apna secret likho</h3>
-          <textarea id="secretInput" placeholder="Chhupa ke likho — winner hi dekhega"></textarea>
-          <div class="modal-actions">
-            <button id="submitSecretBtn" class="btn">Submit Secret</button>
-          </div>
-        </div>
-      </section>
+  <footer class="footer">
+    <small>Made with a dash of curiosity • <span class="easter">P A L — K</span></small>
+  </footer>
+</div>
 
-      <section id="revealModal" class="modal hidden">
-        <div class="modal-card">
-          <h3>Opponent ka secret</h3>
-          <div id="revealedSecret" class="secret-box"></div>
-          <div class="modal-actions">
-            <button id="closeRevealBtn" class="btn">Close</button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <small>Made with a dash of curiosity • <span class="easter">P A L — K</span></small>
-    </footer>
-  </div>
-
-  <script src="client.js"></script>
+<script src="client.js"></script>
 </body>
 </html>
