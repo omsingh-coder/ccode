@@ -11,6 +11,7 @@ module.exports = function(io) {
   io.on('connection', socket => {
     console.log('conn:', socket.id);
 
+    // Create room
     socket.on('create_room', (data, cb) => {
       const { displayName } = data || {};
       const roomCode = rooms.createRoom(displayName, socket.id);
@@ -19,47 +20,69 @@ module.exports = function(io) {
       io.to(roomCode).emit('room_update', rooms.getRoomInfo(roomCode));
     });
 
+    // Join room
     socket.on('join_room', (data, cb) => {
       const { roomCode, displayName } = data || {};
       const res = rooms.joinRoom(roomCode, socket.id, displayName);
       if (!res.ok) return cb && cb({ error: res.error });
+
       socket.join(roomCode);
       cb && cb({ ok: true });
       io.to(roomCode).emit('room_update', rooms.getRoomInfo(roomCode));
     });
 
+    // Submit secret
     socket.on('submit_secret', (data, cb) => {
       const { roomCode, secret } = data || {};
       const room = rooms.getRoom(roomCode);
       if (!room) return cb && cb({ error: 'Room not found' });
+
       const enc = encryptSecret(String(secret || ''));
       rooms.setPlayerSecret(roomCode, socket.id, enc);
+
       cb && cb({ ok: true });
       io.to(roomCode).emit('room_update', rooms.getRoomInfo(roomCode));
+
       // Auto-start if two players + both secrets present
       if (rooms.canStart(roomCode)) {
         rooms.startGame(roomCode);
-        io.to(roomCode).emit('game_start', { fen: rooms.getFen(roomCode), whitePlayerId: rooms.getWhiteId(roomCode) });
+        io.to(roomCode).emit('game_start', {
+          fen: rooms.getFen(roomCode),
+          whitePlayerId: rooms.getWhiteId(roomCode)
+        });
       }
     });
 
+    // Make move
     socket.on('make_move', (data, cb) => {
       const { roomCode, from, to, promotion } = data || {};
       const room = rooms.getRoom(roomCode);
       if (!room) return cb && cb({ error: 'Room not found' });
+
       const moveRes = ChessLogic.makeMove(room, { from, to, promotion });
       if (!moveRes.ok) return cb && cb({ error: moveRes.error });
-      // broadcast updated fen and move
-      io.to(roomCode).emit('move_made', { fen: room.chess.fen(), move: moveRes.move });
-      // check game over
+
+      // Broadcast updated FEN + move
+      io.to(roomCode).emit('move_made', {
+        fen: room.chess.fen(),
+        move: moveRes.move
+      });
+
+      // Check game over
       if (room.chess.game_over()) {
         rooms.finishGame(roomCode, moveRes.result || {});
-        io.to(roomCode).emit('game_over', { reason: moveRes.reason  'finished', result: moveRes.result  null });
+
+        io.to(roomCode).emit('game_over', {
+          reason: moveRes.reason || 'finished',
+          result: moveRes.result || null
+        });
+
         // Reveal opponent secret to winner only
         const winnerSocketId = rooms.getWinnerSocketId(roomCode);
         if (winnerSocketId) {
           const opponentId = rooms.getOpponentId(roomCode, winnerSocketId);
           const opponentEnc = rooms.getPlayerEncryptedSecret(roomCode, opponentId);
+
           if (opponentEnc) {
             try {
               const secret = decryptSecret(opponentEnc);
@@ -70,15 +93,18 @@ module.exports = function(io) {
           }
         }
       }
+
       cb && cb({ ok: true });
       io.to(roomCode).emit('room_update', rooms.getRoomInfo(roomCode));
     });
 
+    // Request room info
     socket.on('request_room_info', (data, cb) => {
       const { roomCode } = data || {};
       cb && cb(rooms.getRoomInfo(roomCode));
     });
 
+    // Disconnecting
     socket.on('disconnecting', () => {
       for (const roomCode of socket.rooms) {
         if (roomCode === socket.id) continue;
