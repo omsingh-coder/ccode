@@ -1,7 +1,7 @@
 {
   "name": "single-folder-chess-secret",
   "version": "1.0.0",
-  "description": "Mobile-first multiplayer chess with secret reveal to winner (single-folder project)",
+  "description": "Mobile-first multiplayer chess with secret reveal to winner",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
