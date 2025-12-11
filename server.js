@@ -1,18 +1,13 @@
-// server.js
-// Simple Express + Socket.IO server that serves the static index.html and handles sockets via socket-handler.js
-
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
-
 const createSocketHandler = require('./socket-handler');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// serve static files from same folder
 app.use(express.static(path.join(__dirname, '/')));
 
 createSocketHandler(io);
