@@ -19,6 +19,6 @@ createSocketHandler(io);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(Server running at http://localhost:${PORT});
-  console.log(Make sure to set MASTER_KEY env var (32 bytes) for secret encryption.);
+  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Make sure to set MASTER_KEY env var (32 bytes) for secret encryption.`);
 });
